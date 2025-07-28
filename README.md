@@ -5,6 +5,8 @@
 
 A trojan client for Android.
 
+Support Android 16
+
 ## Thanks
 
 * Dreamacro/clash [GPLv3](https://github.com/Dreamacro/clash/blob/master/LICENSE)
