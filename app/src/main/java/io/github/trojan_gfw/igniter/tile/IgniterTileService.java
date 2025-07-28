@@ -1,6 +1,7 @@
 package io.github.trojan_gfw.igniter.tile;
 
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.RemoteException;
@@ -13,6 +14,7 @@ import androidx.annotation.RequiresApi;
 import io.github.trojan_gfw.igniter.LogHelper;
 import io.github.trojan_gfw.igniter.MainActivity;
 import io.github.trojan_gfw.igniter.ProxyService;
+import io.github.trojan_gfw.igniter.R;
 import io.github.trojan_gfw.igniter.common.constants.Constants;
 import io.github.trojan_gfw.igniter.common.utils.PreferenceUtils;
 import io.github.trojan_gfw.igniter.connection.TrojanConnection;
@@ -93,21 +95,35 @@ public class IgniterTileService extends TileService implements TrojanConnection.
             return;
         }
         LogHelper.i(TAG, "updateTile with state: " + state);
+
+        // 设置图标和标签
         switch (state) {
             case ProxyService.STATE_NONE:
-                tile.setState(Tile.STATE_INACTIVE);
-                break;
             case ProxyService.STOPPED:
+                tile.setState(Tile.STATE_INACTIVE);
+                tile.setIcon(Icon.createWithResource(this, R.drawable.ic_tile)); // 替换为你的关闭状态图标
+                tile.setLabel("启动代理"); // 或者从strings.xml获取
                 break;
             case ProxyService.STARTED:
                 tile.setState(Tile.STATE_ACTIVE);
+                tile.setIcon(Icon.createWithResource(this, R.drawable.ic_tile)); // 替换为你的激活状态图标
+                tile.setLabel("关闭代理");
                 break;
             case ProxyService.STARTING:
+                tile.setState(Tile.STATE_UNAVAILABLE);
+                tile.setIcon(Icon.createWithResource(this, R.drawable.ic_tile));
+                tile.setLabel("启动中...");
+                break;
             case ProxyService.STOPPING:
                 tile.setState(Tile.STATE_UNAVAILABLE);
+                tile.setIcon(Icon.createWithResource(this, R.drawable.ic_tile));
+                tile.setLabel("关闭中...");
                 break;
             default:
                 LogHelper.e(TAG, "Unknown state: " + state);
+                tile.setState(Tile.STATE_INACTIVE);
+                tile.setIcon(Icon.createWithResource(this, R.drawable.ic_tile));
+                tile.setLabel("代理");
                 break;
         }
         tile.updateTile();

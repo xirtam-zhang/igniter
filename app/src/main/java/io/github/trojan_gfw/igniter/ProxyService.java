@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -182,7 +183,11 @@ public class ProxyService extends VpnService implements TestConnection.OnResultL
         LogHelper.i(TAG, "onCreate");
         IntentFilter filter = new IntentFilter();
         filter.addAction(getString(R.string.stop_service));
-        registerReceiver(mStopBroadcastReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mStopBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(mStopBroadcastReceiver, filter);
+        }
     }
 
     @Override
@@ -292,7 +297,11 @@ public class ProxyService extends VpnService implements TestConnection.OnResultL
         // it's required to create a notification channel before startForeground on SDK >= Android O
         createNotificationChannel(channelId);
         LogHelper.i(TAG, "start foreground notification");
-        startForeground(IGNITER_STATUS_NOTIFY_MSG_ID, builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // API 34
+            startForeground(IGNITER_STATUS_NOTIFY_MSG_ID, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
+        } else {
+            startForeground(IGNITER_STATUS_NOTIFY_MSG_ID, builder.build());
+        }
     }
 
     private boolean readClashPreference() {

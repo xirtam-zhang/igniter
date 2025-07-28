@@ -20,6 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# for GSON
--keep class io.github.trojan_gfw.igniter.TrojanURLParseResult { *; }
--keep class io.github.trojan_gfw.igniter.TrojanConfig { *; }
+# Keep BuildConfig
+-keep class **.BuildConfig { *; }
